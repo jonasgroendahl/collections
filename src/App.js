@@ -3,28 +3,31 @@ import { MuiThemeProvider, CssBaseline } from "@material-ui/core";
 import Nav from "./components/Nav";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import theme from "./utils/theme";
-import Home from "./pages/Home";
 import Global from "./pages/Global";
-import Client from "./pages/Client";
-import Collection from "./components/Collection";
+import Collection from "./pages/Collection";
+import { ContextProvider } from "./utils/Context";
+import Providers from "./pages/Providers";
+import Provider from "./pages/Provider";
 
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <div className="App">
-          <Nav />
-          <main>
-            <Switch>
-              <Route path="/" exact component={Home} />
-              <Route path="/clients/:id" component={Client} />
-              <Route path="/clients" component={Home} />
-              <Route path="/global" component={Global} />
-              <Route path="/collections/:id" component={Collection} />
-            </Switch>
-          </main>
-        </div>
+        <ContextProvider>
+          <div className="App">
+            <Nav />
+            <main>
+              <Switch>
+                <Route path="/" exact component={Global} />
+                <Route path="/global" component={Global} />
+                <Route path="/collections/:id" component={Collection} />
+                <Route path="/providers/:id" component={Provider} />
+                <Route path="/providers" component={Providers} />
+              </Switch>
+            </main>
+          </div>
+        </ContextProvider>
       </BrowserRouter>
     </MuiThemeProvider>
   );

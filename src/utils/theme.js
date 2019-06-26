@@ -35,6 +35,10 @@ const theme = createMuiTheme({
       textTransform: "uppercase",
       color: "#3c3c3b",
       fontStyle: "italic"
+    },
+    caption: {
+      textTransform: "uppercase",
+      fontWeight: 600
     }
   },
   overrides: {

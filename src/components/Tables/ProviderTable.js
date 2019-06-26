@@ -19,6 +19,33 @@ import { Link } from "react-router-dom";
 import SkeletonTable from "./SkeletonTable";
 import { collections } from "../../utils/vars";
 
+const providersRaw = [
+  {
+    id: 1,
+    name: "test1",
+    titles: 43,
+    active: false
+  },
+  {
+    id: 1,
+    name: "test1",
+    titles: 43,
+    active: false
+  },
+  {
+    id: 1,
+    name: "test1",
+    titles: 43,
+    active: false
+  },
+  {
+    id: 1,
+    name: "test1",
+    titles: 43,
+    active: false
+  }
+];
+
 const styles = theme => ({
   container: {
     display: "flex"
@@ -34,12 +61,12 @@ const styles = theme => ({
   ...TableStyles(theme)
 });
 
-function ClientTable({ classes, id }) {
+function ProviderTable({ classes }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setData(collections);
+    setData(providersRaw);
     setLoading(false);
   }, []);
 
@@ -71,30 +98,24 @@ function ClientTable({ classes, id }) {
             <TableRow>
               <TableCell />
               <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Player type</TableCell>
-              <TableCell>Publish start</TableCell>
-              <TableCell>Publish end</TableCell>
+              <TableCell>Titles</TableCell>
               <TableCell>Active</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(col => (
+            {data.map(provider => (
               <TableRow>
                 <TableCell>
-                  <Checkbox checked={col.selected} color="primary" />
+                  <Checkbox checked={provider.selected} color="primary" />
                 </TableCell>
-                <TableCell>{col.name}</TableCell>
-                <TableCell>{col.type}</TableCell>
-                <TableCell>{col.playerType}</TableCell>
-                <TableCell>{col.type === "featured" ? "∞" : col.start}</TableCell>
-                <TableCell>{col.type === "featured" ? "∞" : col.end}</TableCell>
+                <TableCell>{provider.name}</TableCell>
+                <TableCell>{provider.titles}</TableCell>
                 <TableCell>
-                  <Checkbox checked={col.type === "featured" ? true : col.active} color="primary" />
+                  <Checkbox checked={provider.active} color="primary" />
                 </TableCell>
                 <TableCell>
-                  <Link to={`/collections/${col.id}`}>
+                  <Link to={`/providers/${provider.id}`}>
                     <ChevronRight color="primary" />
                   </Link>
                 </TableCell>
@@ -107,4 +128,4 @@ function ClientTable({ classes, id }) {
   );
 }
 
-export default withStyles(styles)(ClientTable);
+export default withStyles(styles)(ProviderTable);

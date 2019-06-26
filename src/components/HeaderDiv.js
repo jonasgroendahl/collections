@@ -33,9 +33,11 @@ function HeaderDiv(props) {
   const [page, setPage] = useState(location.pathname);
 
   function handleChange(e) {
-    const newPage = e.target.value;
-    setPage(newPage);
-    history.push(newPage);
+    if (e.target.value) {
+      const newPage = e.target.value;
+      setPage(newPage);
+      history.push(newPage);
+    }
   }
 
   return (
@@ -44,9 +46,10 @@ function HeaderDiv(props) {
         <div>{children}</div>
         <div className={classes.jumpMenu}>
           <Typography variant="caption">JUMP MENU</Typography>
-          <Select className="Select" native disableUnderline onChange={handleChange} value={page}>
-            <option value="/clients">Clients</option>
+          <Select className="Select" native disableUnderline onClick={handleChange} onChange={handleChange} value={page}>
+            <option value="">Choose page</option>
             <option value="/global">Global collections</option>
+            <option value="/providers">Providers</option>
           </Select>
         </div>
       </div>

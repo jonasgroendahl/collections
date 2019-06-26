@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Table,
   FormControlLabel,
@@ -17,6 +17,8 @@ import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
 import { API_URL } from "../../utils/vars";
 import { Link } from "react-router-dom";
+import SkeletonTable from "./SkeletonTable";
+import Context from "../../utils/Context";
 
 const styles = theme => ({
   container: {
@@ -35,11 +37,17 @@ const styles = theme => ({
 
 function ClientTable({ classes }) {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const context = useContext(Context);
 
   useEffect(() => {
     fetch(`${API_URL}/v3/clubs`)
       .then(res => res.json())
-      .then(clubs => setData(clubs.slice(0, 10)));
+      .then(clubs => {
+        console.log(clubs);
+        setData(clubs.slice(0, 10));
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -74,30 +82,36 @@ function ClientTable({ classes }) {
           />
         </div>
       </div>
-      <Table className={classes.TableStyles}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Country</TableCell>
-            <TableCell>Active</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map(client => (
-            <TableRow>
-              <TableCell>{client.name}</TableCell>
-              <TableCell>{client.country}</TableCell>
-              <TableCell>{client.active}</TableCell>
-              <TableCell>
-                <Link to={`/clients/${client.id}`}>
-                  <ChevronRight color="primary" />
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {loading ? (
+        <SkeletonTable />
+      ) : (
+        <div className="TableWrapper">
+          <Table className={classes.TableStyles}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Country</TableCell>
+                <TableCell>Active</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map(client => (
+                <TableRow key={client.id}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.country}</TableCell>
+                  <TableCell>{client.active}</TableCell>
+                  <TableCell>
+                    <Link to={`/clients/${client.id}`} onClick={() => context.setSelectedClient(client)}>
+                      <ChevronRight color="primary" />
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 }

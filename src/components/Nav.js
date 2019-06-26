@@ -11,7 +11,7 @@ const styles = theme => ({
       marginLeft: 5
     },
     "& p": {
-      fontSize: "1.35rem",
+      fontSize: "1.8rem",
       color: theme.palette.primary.light,
       fontWeight: 600
     }
