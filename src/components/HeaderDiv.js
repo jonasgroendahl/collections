@@ -50,6 +50,7 @@ function HeaderDiv(props) {
             <option value="">Choose page</option>
             <option value="/global">Global collections</option>
             <option value="/providers">Providers</option>
+            <option value="/content">Content titles</option>
           </Select>
         </div>
       </div>

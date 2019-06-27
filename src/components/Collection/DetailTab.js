@@ -13,17 +13,14 @@ const styles = {
 };
 
 function CollectionDetailTab(props) {
-  console.log(props);
   const { classes, name, type, playerType, description, active, onChange, start, end } = props;
   return (
     <div>
       <div className={classes.formGrid}>
         <Typography variant="caption">Name</Typography>
         <TextField placeholder="Featured" value={name} name="name" onChange={onChange} />
-        <Typography variant="caption" name="active">
-          Active
-        </Typography>
-        <Checkbox checked={active} style={{ justifySelf: "flex-start" }} />
+        <Typography variant="caption">Active</Typography>
+        <Checkbox checked={active} onChange={onChange} name="active" style={{ justifySelf: "flex-start" }} />
         <Typography variant="caption">Type</Typography>
         <Select native value={type} className="Select border" disableUnderline name="type" onChange={onChange}>
           <option value="featured">Featured</option>

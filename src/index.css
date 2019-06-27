@@ -56,6 +56,31 @@ a {
   text-decoration: none;
 }
 
+.Scroll-container {
+  height: calc(100vh - 184.55px - 64px - 30px - 64px - 80px);
+  overflow: auto;
+}
+
+.OrderTab {
+  display: flex;
+}
+
+.OrderTab > *:first-child {
+  margin-right: 30px;
+}
+
+.OrderTab .MuiListItem-root {
+  min-width: 200px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  max-width: 500px;
+  align-items: center;
+  grid-gap: 10px;
+}
+
 @keyframes placeHolderShimmer {
   0% {
     background-position: -490px 0;

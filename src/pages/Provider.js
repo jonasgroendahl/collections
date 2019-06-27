@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderDiv from "../components/HeaderDiv";
 import Tabs from "../components/HeaderTabs";
 import MultiLineHeadLine from "../components/MultiLineHeadLine";
-import { Typography, TextField, Checkbox } from "@material-ui/core";
+import { Typography, TextField, Checkbox, Button } from "@material-ui/core";
 import PlayerTable from "../components/Tables/PlayerTable";
 import Footer from "../components/Footer";
+import { providersRaw } from "../utils/vars";
 
 const styles = {
   display: "grid",
@@ -14,12 +15,17 @@ const styles = {
   gridGap: "10px"
 };
 
-export default function Provider() {
+export default function Provider({ match }) {
   const [tab, setTab] = useState(0);
   const [provider, setProvider] = useState({ name: "", id: 0, active: true });
 
+  useEffect(() => {
+    const findProvider = providersRaw.find(provider => provider.id === parseInt(match.params.id));
+    setProvider(findProvider);
+  }, []);
+
   function handleChange(e) {
-    setProvider({ ...provider, [e.target.name]: e.target.value });
+    setProvider({ ...provider, [e.target.name]: e.target.type === "checkbox" ? e.target.checked : e.target.value });
   }
 
   return (
@@ -31,18 +37,22 @@ export default function Provider() {
         {tab === 0 && (
           <div style={styles}>
             <Typography variant="caption">Name</Typography>
-            <TextField value={Provider.name} disableUnderline name="name" onChange={handleChange} />
+            <TextField value={provider.name} name="name" onChange={handleChange} />
             <Typography variant="caption">Active</Typography>
             <Checkbox checked={provider.active} onChange={handleChange} name="active" style={{ justifySelf: "baseline" }} />
           </div>
         )}
         {tab === 1 ? (
           <div>
-            <PlayerTable />{" "}
+            <PlayerTable />
           </div>
         ) : null}
       </div>
-      <Footer />
+      <Footer>
+        <Button variant="contained" color="primary">
+          Save
+        </Button>
+      </Footer>
     </div>
   );
 }

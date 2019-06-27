@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, FormControlLabel, Checkbox, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody, Button } from "@material-ui/core";
-import { Search, ChevronRight, CheckBoxOutlineBlank, CheckBox, Add, CheckBoxTwoTone } from "@material-ui/icons";
+import { Table, FormControlLabel, Checkbox, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
+import { Search, ChevronRight, CheckBox, CheckBoxOutlineBlank } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
 import { Link } from "react-router-dom";
 import SkeletonTable from "./SkeletonTable";
-import { collections } from "../../utils/vars";
+import { titles } from "../../utils/vars";
 
 const styles = theme => ({
   container: {
@@ -22,23 +22,13 @@ const styles = theme => ({
   ...TableStyles(theme)
 });
 
-function getActiveIcon(col) {
-  if (col.type === "featured") {
-    return <CheckBoxTwoTone />;
-  } else if (col.active) {
-    return <CheckBox />;
-  } else {
-    return <CheckBoxOutlineBlank />;
-  }
-}
-
-function ClientTable({ classes, id }) {
+function ContentTitlesTable({ classes }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const newData = collections.map(el => ({ ...el, selected: false }));
+    const newData = Object.keys(titles).map(el => ({ ...titles[el], selected: false }));
     setData(newData);
     setLoading(false);
   }, []);
@@ -48,9 +38,9 @@ function ClientTable({ classes, id }) {
     setData(newData);
   }
 
-  function handleSelect(e, item) {
+  function handleSelect(e, provider) {
+    const index = data.findIndex(prov => prov.id === provider.id);
     const newData = [...data];
-    const index = newData.findIndex(el => el.id === item.id);
     newData[index].selected = e.target.checked;
     setData(newData);
   }
@@ -60,18 +50,13 @@ function ClientTable({ classes, id }) {
       <div className={classes.container}>
         <FormControlLabel control={<Checkbox color="primary" onChange={handleBulkSelect} />} label="Select items" />
         <div className={classes.filters}>
-          <Link to="/collections/0">
-            <Button>
-              Add <Add style={{ marginLeft: 10 }} />
-            </Button>
-          </Link>
           <TextField
             variant="outlined"
             color="primary"
             placeholder="Search"
-            autoFocus
             value={search}
             onChange={e => setSearch(e.target.value)}
+            autoFocus
             InputProps={{
               endAdornment: (
                 <InputAdornment position="start">
@@ -90,30 +75,24 @@ function ClientTable({ classes, id }) {
             <TableRow>
               <TableCell />
               <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Player type</TableCell>
-              <TableCell>Publish start</TableCell>
-              <TableCell>Publish end</TableCell>
+              <TableCell>Provider</TableCell>
               <TableCell>Active</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
             {data
-              .filter(col => col.name.toLowerCase().includes(search.toLowerCase()))
-              .map(col => (
-                <TableRow key={col.id}>
+              .filter(el => el.name.toLowerCase().includes(search.toLowerCase()))
+              .map((el, i) => (
+                <TableRow key={i}>
                   <TableCell>
-                    <Checkbox checked={col.selected} onChange={e => handleSelect(e, col)} color="primary" />
+                    <Checkbox checked={el.selected} color="primary" name="selected" onChange={e => handleSelect(e, el)} />
                   </TableCell>
-                  <TableCell>{col.name}</TableCell>
-                  <TableCell>{col.type}</TableCell>
-                  <TableCell>{col.playerType}</TableCell>
-                  <TableCell>{col.type === "featured" ? "∞" : col.start}</TableCell>
-                  <TableCell>{col.type === "featured" ? "∞" : col.end}</TableCell>
-                  <TableCell>{getActiveIcon(col)}</TableCell>
+                  <TableCell>{el.name}</TableCell>
+                  <TableCell>{el.providerName}</TableCell>
+                  <TableCell>{el.active ? <CheckBox /> : <CheckBoxOutlineBlank />}</TableCell>
                   <TableCell>
-                    <Link to={`/collections/${col.id}`}>
+                    <Link to={`/content/${el.id}`}>
                       <ChevronRight color="primary" />
                     </Link>
                   </TableCell>
@@ -126,4 +105,4 @@ function ClientTable({ classes, id }) {
   );
 }
 
-export default withStyles(styles)(ClientTable);
+export default withStyles(styles)(ContentTitlesTable);

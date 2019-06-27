@@ -1,51 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody, Typography, Checkbox } from "@material-ui/core";
 import { Search, ChevronRight } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
-import { API_URL } from "../../utils/vars";
 import { Link } from "react-router-dom";
 import SkeletonTable from "./SkeletonTable";
-import Context from "../../utils/Context";
-
-const players = [
-  {
-    id: 0,
-    name: "player x",
-    clubId: 34,
-    chainId: 4,
-    selectedWeb: 0,
-    selectedVirtual: 1,
-    selected: false
-  },
-  {
-    id: 1,
-    name: "player x",
-    clubId: 34,
-    chainId: 4,
-    selectedWeb: 0,
-    selectedVirtual: 1,
-    selected: false
-  },
-  {
-    id: 2,
-    name: "player x",
-    clubId: 34,
-    chainId: 4,
-    selectedWeb: 0,
-    selectedVirtual: 1,
-    selected: false
-  },
-  {
-    id: 3,
-    name: "player x",
-    clubId: 34,
-    chainId: 2,
-    selectedWeb: 1,
-    selectedVirtual: 1,
-    selected: false
-  }
-];
+import { players } from "../../utils/vars";
 
 const styles = theme => ({
   container: {
@@ -75,6 +35,19 @@ function PlayerTable({ classes }) {
     setLoading(false);
   }, []);
 
+  function handleCheckboxChange(e, item) {
+    console.log(e, item);
+    const index = data.findIndex(player => player.id === item.id);
+    const newData = [...data];
+    newData[index][e.target.name] = e.target.checked;
+    setData(newData);
+  }
+
+  function handleBulkChange(e) {
+    const newData = data.map(el => ({ ...el, selected: e.target.checked }));
+    setData(newData);
+  }
+
   let renderBody = [];
   let selectedData = 0;
 
@@ -84,16 +57,16 @@ function PlayerTable({ classes }) {
         selectedData++;
       }
       renderBody.push(
-        <TableRow>
+        <TableRow key={col.id}>
           <TableCell>
-            <Checkbox checked={col.selected} />
+            <Checkbox checked={Boolean(col.selected)} onChange={e => handleCheckboxChange(e, col)} name="selected" />
           </TableCell>
           <TableCell>{col.name}</TableCell>
           <TableCell>
-            <Checkbox checked={col.selectedWeb} />
+            <Checkbox checked={Boolean(col.selectedWeb)} onChange={e => handleCheckboxChange(e, col)} name="selectedWeb" />
           </TableCell>
           <TableCell>
-            <Checkbox checked={col.selectedVirtual} />
+            <Checkbox checked={Boolean(col.selectedVirtual)} onChange={e => handleCheckboxChange(e, col)} name="selectedVirtual" />
           </TableCell>
           <TableCell style={{ textAlign: "right" }}>
             <Link to={`/collections/${col.id}`}>
@@ -110,7 +83,7 @@ function PlayerTable({ classes }) {
       <div className={classes.container}>
         <div className={classes.filters}>
           <div className={classes.flex}>
-            <Checkbox />
+            <Checkbox onChange={handleBulkChange} />
             <Typography>{`${selectedData} items on this page selected.`}</Typography>
           </div>
           <div style={{ flexGrow: 1 }} />

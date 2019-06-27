@@ -12,13 +12,15 @@ const styles = theme => ({
     },
     "& td": {
       borderBottomColor: theme.palette.primary.main
-    },
+    }
+    /*
     "& tbody tr:hover": {
       backgroundColor: `${theme.palette.primary.main} !important`,
       "& svg > path:first-child": {
         fill: "white"
       }
     }
+    */
   }
 });
 

@@ -5,7 +5,7 @@ import { MenuSharp } from "@material-ui/icons";
 
 export default function CollectionOrderTab({ onChange, selectedWeb, selectedVirtual }) {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="OrderTab">
       <div>
         <DragDropContext onDragEnd={e => onChange(e, "selectedVirtual")}>
           <Typography variant="h5">Virtual</Typography>
@@ -14,7 +14,7 @@ export default function CollectionOrderTab({ onChange, selectedWeb, selectedVirt
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 <List style={{ maxWidth: 300 }}>
                   {selectedVirtual.map((item, index) => (
-                    <Draggable index={index} draggableId={`${index}_d`}>
+                    <Draggable index={index} draggableId={`${index}_d`} key={index}>
                       {drag => (
                         <div ref={drag.innerRef} {...drag.dragHandleProps} {...drag.draggableProps}>
                           <ListItem divider>
@@ -34,7 +34,7 @@ export default function CollectionOrderTab({ onChange, selectedWeb, selectedVirt
           </Droppable>
         </DragDropContext>
       </div>
-      <div style={{ marginLeft: 20 }}>
+      <div>
         <DragDropContext onDragEnd={e => onChange(e, "selectedWeb")}>
           <Typography variant="h5">Web</Typography>
           <Droppable droppableId={2}>
@@ -42,7 +42,7 @@ export default function CollectionOrderTab({ onChange, selectedWeb, selectedVirt
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 <List style={{ maxWidth: 300 }}>
                   {selectedWeb.map((item, index) => (
-                    <Draggable index={index} draggableId={`${index}_d`}>
+                    <Draggable index={index} draggableId={`${index}_d`} key={`2_${index}`}>
                       {drag => (
                         <div ref={drag.innerRef} {...drag.dragHandleProps} {...drag.draggableProps}>
                           <ListItem divider>

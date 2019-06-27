@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  Table,
-  FormControlLabel,
-  Checkbox,
-  Select,
-  InputAdornment,
-  TextField,
-  OutlinedInput,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody
-} from "@material-ui/core";
-import { Search, ChevronRight } from "@material-ui/icons";
+import React, { useState, useEffect } from "react";
+import { Table, FormControlLabel, Checkbox, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
+import { Search, ChevronRight, CheckBox, CheckBoxOutlineBlank } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
-import { API_URL } from "../../utils/vars";
 import { Link } from "react-router-dom";
 import SkeletonTable from "./SkeletonTable";
-import Context from "../../utils/Context";
+import { clients } from "../../utils/vars";
 
 const styles = theme => ({
   container: {
@@ -38,39 +25,37 @@ const styles = theme => ({
 function ClientTable({ classes }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const context = useContext(Context);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/v3/clubs`)
-      .then(res => res.json())
-      .then(clubs => {
-        console.log(clubs);
-        setData(clubs.slice(0, 10));
-        setLoading(false);
-      });
+    const newData = clients.map(el => ({ ...el, selected: false, selectedWeb: false, selectedVirtual: false }));
+    setData(newData);
+    setLoading(false);
   }, []);
+
+  function handleBulkSelect(e) {
+    const newData = data.map(el => ({ ...el, selected: e.target.checked }));
+    setData(newData);
+  }
+
+  function handleSelect(e, provider) {
+    const index = data.findIndex(prov => prov.id === provider.id);
+    const newData = [...data];
+    newData[index][e.target.name] = e.target.checked;
+    setData(newData);
+  }
 
   return (
     <div className="indent">
       <div className={classes.container}>
-        <FormControlLabel control={<Checkbox color="primary" />} label="Select items" />
+        <FormControlLabel control={<Checkbox color="primary" onChange={handleBulkSelect} />} label="Select items" />
         <div className={classes.filters}>
-          <Select
-            label="Filter by country"
-            color="primary"
-            input={<OutlinedInput labelWidth={0} name="age" id="outlined-age-simple" />}
-            defaultValue={""}
-            native
-          >
-            <option value="" disabled>
-              Filter by country
-            </option>
-            <option>Denmark</option>
-          </Select>
           <TextField
             variant="outlined"
             color="primary"
             placeholder="Search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             autoFocus
             InputProps={{
               endAdornment: (
@@ -85,32 +70,36 @@ function ClientTable({ classes }) {
       {loading ? (
         <SkeletonTable />
       ) : (
-        <div className="TableWrapper">
-          <Table className={classes.TableStyles}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Country</TableCell>
-                <TableCell>Active</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map(client => (
-                <TableRow key={client.id}>
-                  <TableCell>{client.name}</TableCell>
-                  <TableCell>{client.country}</TableCell>
-                  <TableCell>{client.active}</TableCell>
+        <Table className={classes.TableStyles}>
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Name</TableCell>
+              <TableCell>Web</TableCell>
+              <TableCell>Virtual</TableCell>
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data
+              .filter(el => el.name.toLowerCase().includes(search.toLowerCase()))
+              .map((el, i) => (
+                <TableRow key={i}>
                   <TableCell>
-                    <Link to={`/clients/${client.id}`} onClick={() => context.setSelectedClient(client)}>
-                      <ChevronRight color="primary" />
-                    </Link>
+                    <Checkbox checked={el.selected} color="primary" name="selected" onChange={e => handleSelect(e, el)} />
                   </TableCell>
+                  <TableCell>{el.name}</TableCell>
+                  <TableCell>
+                    <Checkbox checked={el.selectedWeb} name="selectedWeb" onChange={e => handleSelect(e, el)} />
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={el.selectedVirtual} name="selectedVirtual" onChange={e => handleSelect(e, el)} />
+                  </TableCell>
+                  <TableCell />
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
-        </div>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

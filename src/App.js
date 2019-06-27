@@ -8,6 +8,8 @@ import Collection from "./pages/Collection";
 import { ContextProvider } from "./utils/Context";
 import Providers from "./pages/Providers";
 import Provider from "./pages/Provider";
+import ContentTitles from "./pages/ContentTitles";
+import ContentTitle from "./pages/ContentTitle";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
                 <Route path="/collections/:id" component={Collection} />
                 <Route path="/providers/:id" component={Provider} />
                 <Route path="/providers" component={Providers} />
+                <Route path="/content/:id" component={ContentTitle} />
+                <Route path="/content" component={ContentTitles} />
               </Switch>
             </main>
           </div>

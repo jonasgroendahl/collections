@@ -1,50 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  FormControlLabel,
-  Checkbox,
-  Select,
-  InputAdornment,
-  TextField,
-  OutlinedInput,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody
-} from "@material-ui/core";
-import { Search, ChevronRight } from "@material-ui/icons";
+import { Table, FormControlLabel, Checkbox, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody } from "@material-ui/core";
+import { Search, ChevronRight, CheckBox, CheckBoxOutlineBlank } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
 import { Link } from "react-router-dom";
 import SkeletonTable from "./SkeletonTable";
-import { collections } from "../../utils/vars";
-
-const providersRaw = [
-  {
-    id: 1,
-    name: "test1",
-    titles: 43,
-    active: false
-  },
-  {
-    id: 1,
-    name: "test1",
-    titles: 43,
-    active: false
-  },
-  {
-    id: 1,
-    name: "test1",
-    titles: 43,
-    active: false
-  },
-  {
-    id: 1,
-    name: "test1",
-    titles: 43,
-    active: false
-  }
-];
+import { providersRaw } from "../../utils/vars";
 
 const styles = theme => ({
   container: {
@@ -64,21 +25,36 @@ const styles = theme => ({
 function ProviderTable({ classes }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setData(providersRaw);
     setLoading(false);
   }, []);
 
+  function handleBulkSelect(e) {
+    const newData = data.map(el => ({ ...el, selected: e.target.checked }));
+    setData(newData);
+  }
+
+  function handleSelect(e, provider) {
+    const index = data.findIndex(prov => prov.id === provider.id);
+    const newData = [...data];
+    newData[index].selected = e.target.checked;
+    setData(newData);
+  }
+
   return (
     <div className="indent">
       <div className={classes.container}>
-        <FormControlLabel control={<Checkbox color="primary" />} label="Select items" />
+        <FormControlLabel control={<Checkbox color="primary" onChange={handleBulkSelect} />} label="Select items" />
         <div className={classes.filters}>
           <TextField
             variant="outlined"
             color="primary"
             placeholder="Search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             autoFocus
             InputProps={{
               endAdornment: (
@@ -104,23 +80,23 @@ function ProviderTable({ classes }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(provider => (
-              <TableRow>
-                <TableCell>
-                  <Checkbox checked={provider.selected} color="primary" />
-                </TableCell>
-                <TableCell>{provider.name}</TableCell>
-                <TableCell>{provider.titles}</TableCell>
-                <TableCell>
-                  <Checkbox checked={provider.active} color="primary" />
-                </TableCell>
-                <TableCell>
-                  <Link to={`/providers/${provider.id}`}>
-                    <ChevronRight color="primary" />
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+            {data
+              .filter(provider => provider.name.toLowerCase().includes(search.toLowerCase()))
+              .map((provider, i) => (
+                <TableRow key={i}>
+                  <TableCell>
+                    <Checkbox checked={provider.selected} color="primary" name="selected" onChange={e => handleSelect(e, provider)} />
+                  </TableCell>
+                  <TableCell>{provider.name}</TableCell>
+                  <TableCell>{provider.titles}</TableCell>
+                  <TableCell>{provider.active ? <CheckBox /> : <CheckBoxOutlineBlank />}</TableCell>
+                  <TableCell>
+                    <Link to={`/providers/${provider.id}`}>
+                      <ChevronRight color="primary" />
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       )}
