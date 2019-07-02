@@ -40,6 +40,8 @@ function HeaderDiv(props) {
     }
   }
 
+  const isValid = page === "/global" || page === "/providers" || page === "/content";
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.container}>
@@ -47,7 +49,9 @@ function HeaderDiv(props) {
         <div className={classes.jumpMenu}>
           <Typography variant="caption">JUMP MENU</Typography>
           <Select className="Select" native disableUnderline onClick={handleChange} onChange={handleChange} value={page}>
-            <option value="">Choose page</option>
+            <option value="" disabled={isValid}>
+              Choose page
+            </option>
             <option value="/global">Global collections</option>
             <option value="/providers">Providers</option>
             <option value="/content">Content titles</option>

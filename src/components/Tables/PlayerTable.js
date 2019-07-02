@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody, Typography, Checkbox } from "@material-ui/core";
+import { Table, InputAdornment, TextField, TableHead, TableRow, TableCell, TableBody, Typography, Checkbox, Select } from "@material-ui/core";
 import { Search, ChevronRight } from "@material-ui/icons";
 import { withStyles } from "@material-ui/styles";
 import TableStyles from "../../styles/TableStyles";
@@ -48,6 +48,14 @@ function PlayerTable({ classes }) {
     setData(newData);
   }
 
+  function handleAction(e) {
+    if (e.target.value === "Check Web") {
+      const newData = data.map(item => ({ ...item, selectedWeb: item.selected ? true : item.selectedWeb }));
+      setData(newData);
+    }
+    e.target.value = "";
+  }
+
   let renderBody = [];
   let selectedData = 0;
 
@@ -88,6 +96,12 @@ function PlayerTable({ classes }) {
           </div>
           <div style={{ flexGrow: 1 }} />
           <Typography>Actions:</Typography>
+          <Select defaultValue="" onChange={handleAction} native className="Select border" disableUnderline>
+            <option value="" disabled>
+              Choose action
+            </option>
+            <option>Check Web</option>
+          </Select>
           <TextField
             variant="outlined"
             color="primary"
